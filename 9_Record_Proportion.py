@@ -33,6 +33,7 @@ TOTAL_JOBS = TOTAL_JOBS
 THRESHOLD = THRESHOLD
 NUM_DISPATCHER = NUM_DISPATCHER
 EQUILIBRIUM_AMOUNT = EQUILIBRIUM_AMOUNT
+NUM_OBSERVATIONS = NUM_OBSERVATIONS
 NUM_SERVERS_PER_CLASS = NUM_SERVERS_PER_CLASS
 SERVICE_RATE_PER_CLASS = SERVICE_RATE_PER_CLASS
 
@@ -43,14 +44,16 @@ INFORM_DISPATCHER_POLICY = INFORM_DISPATCHER_POLICY
 SELECT_SERVER_POLICY = SELECT_SERVER_POLICY
 
 
-class MetricTracker:
+class Metrics:
     def __init__(self):
         self.total_time: float = 0
         self.rho: float = 0
         self.proportion_idle_servers = [pd.DataFrame(columns=['timestamp', 'idle_proportion'])] * s
-        self.proportion_idle_servers_data = [[] * s]
+        self.proportion_idle_servers_data = [[] for _ in range(s)]
+        self.tagged_servers: List[Server] = [None] * s
+        self.tagged_servers_idle_freq = [0] * s
 
-metrics = MetricTracker()
+metrics = Metrics()
 
 class Dispatcher:
     def __init__(self, index):
@@ -401,7 +404,7 @@ def pick_server(chosen_dispatcher, fastest_existing_idle_speed, clock, two_D_Arr
         return picked_server
         
 
-def pasta_measurements(timestamp, dispatchers: List[Dispatcher]):
+def pasta_measurements(timestamp, dispatchers: List[Dispatcher], clock):
     ''' Once a job arrives, record proportion of occupied dispatchers (to update rho), and record proportion
     of idle servers per speed class'''
     def update_rho():
@@ -419,7 +422,14 @@ def pasta_measurements(timestamp, dispatchers: List[Dispatcher]):
             total_idle_per_class[i] += len(dispatcher.big_idle_list[i])         #ASSUMED THAT each idle server belonged in only one dispatcher
     for i in range(s):
         metrics.proportion_idle_servers_data[i].append({'timestamp': timestamp, 'idle_proportion': total_idle_per_class[i] / NUM_SERVERS_PER_CLASS[i]})
+    
     update_rho()
+    
+    for i, server in enumerate(metrics.tagged_servers):
+        finish_jobs_in_servers([server], clock)
+        if len(server.queued_jobs) == 0:
+            metrics.tagged_servers_idle_freq[i] += 1
+    
 #________________________________________________________________________________
 
 def main():
@@ -438,6 +448,9 @@ def main():
     dispatchers = create_dispatchers(servers) # list
     servers_PQ = create_servers_priority_queue(servers_as_list) # Priority queue 
     
+    for i in range(s):
+        metrics.tagged_servers[i] = servers[i][0]   # Tag the first server of each class
+    
     # Set up system details
     clock = 0
     next_arrival_time = generate_new_interarrival(ARRIVAL_RATE)
@@ -449,7 +462,7 @@ def main():
         add_idle_servers_to_idle_lists(servers_PQ, dispatchers, clock) # Make sure idlelist is up to date, if any servers had became idle in between job arrivals
         
         if jobs_added >= EQUILIBRIUM_AMOUNT:
-            pasta_measurements(jobs_added - EQUILIBRIUM_AMOUNT, dispatchers)
+            pasta_measurements(jobs_added - EQUILIBRIUM_AMOUNT, dispatchers, clock)
         
         chosen_dispatcher = dispatchers[random.randint(0,NUM_DISPATCHER - 1)] # select a random dispatcher
         fastest_existing_idle_speed = None # Could be None (i-queue has 0 idle servers), or 0 through s-1
@@ -476,14 +489,15 @@ def main():
     clock = sys.maxsize - 100 # Flashforward time
     finish_jobs_in_servers(servers_as_list, clock)
     
-    # Add all PASTA data points to pandas dataframe
+    # Convert PASTA data points to pandas dataframe
     for i in range(s):
         metrics.proportion_idle_servers[i] = pd.DataFrame(metrics.proportion_idle_servers_data[i])
     
     # Print metrics
     print(f'E[T]: {metrics.total_time/TOTAL_JOBS}')
-    print(f'rho: {metrics.rho/(TOTAL_JOBS - EQUILIBRIUM_AMOUNT)}')
+    print(f'rho: {metrics.rho/ NUM_OBSERVATIONS}')
     print(f"proportion of idle servers: {[data['idle_proportion'].mean() for data in metrics.proportion_idle_servers]}")
+    print(f'proportion of idle for tagged servers: {[freq / NUM_OBSERVATIONS for freq in metrics.tagged_servers_idle_freq]}')
     print(f"variance of proportion: {[data['idle_proportion'].var() for data in metrics.proportion_idle_servers]}")
     print(f'arrival rate: {ARRIVAL_RATE / NUM_SERVERS}')
     

@@ -1,9 +1,10 @@
 NUM_SERVERS = 1000 # DEFAULT = 1000
 ARRIVAL_RATE = .7 * NUM_SERVERS  # DEFAULT .5
 d = 5 # number of queried servers       DEFAULT = 5
-s = 1 # number of classes of server speeds
+s = 2 # number of classes of server speeds
 TOTAL_JOBS = 10**5 # DEFAULT = 10**5
-EQUILIBRIUM_AMOUNT = 10**4
+EQUILIBRIUM_AMOUNT = 10**4  # DEFAULT = 10**4
+NUM_OBSERVATIONS = TOTAL_JOBS - EQUILIBRIUM_AMOUNT
 THRESHOLD = 5       # DEFAULT = 5
 NUM_DISPATCHER = 5 # DEFAULT = 5
 
