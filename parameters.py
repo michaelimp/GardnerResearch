@@ -1,5 +1,5 @@
 NUM_SERVERS = 1000 # DEFAULT = 1000
-ARRIVAL_RATE = .3 * NUM_SERVERS  # DEFAULT .5
+ARRIVAL_RATE = .7 * NUM_SERVERS  # DEFAULT .5
 d = 5 # number of queried servers       DEFAULT = 5
 s = 1 # number of classes of server speeds
 TOTAL_JOBS = 10**5 # DEFAULT = 10**5

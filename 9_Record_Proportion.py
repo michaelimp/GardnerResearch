@@ -16,6 +16,12 @@ from typing import List
 from parameters import *
 from csvGenerator import generate_querying_probability_csv
 
+# Visualization and Data analysis libraries
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('TkAgg')  # Ensure correct backend for VS Code
+import seaborn as sns
+
 
 #Parameters:
 NUM_SERVERS = NUM_SERVERS
@@ -389,7 +395,7 @@ def pick_server(chosen_dispatcher, fastest_existing_idle_speed, clock, two_D_Arr
         return picked_server, total_time_addition
         
 
-def pasta_measurements(rho, proportion_idle_servers, dispatchers: List[Dispatcher]):
+def pasta_measurements(rho, timestamp, dispatchers: List[Dispatcher], data_lists: List[List]):
     ''' Once a job arrives, record proportion of occupied dispatchers (to update rho), and record proportion
     of idle servers per speed class'''
     def update_rho():
@@ -406,8 +412,7 @@ def pasta_measurements(rho, proportion_idle_servers, dispatchers: List[Dispatche
         for i in range(s):
             total_idle_per_class[i] += len(dispatcher.big_idle_list[i])         #ASSUMED THAT each idle server belonged in only one dispatcher
     for i in range(s):
-        proportion_idle_servers[i] += total_idle_per_class[i] / NUM_SERVERS_PER_CLASS[i]        #TODO rethink, is it divided by NUM_SERVERS
-        # proportion_idle_servers[i] += total_idle_per_class[i] / NUM_SERVERS
+        data_lists[i].append({'timestamp': timestamp, 'idle_proportion': total_idle_per_class[i] / NUM_SERVERS_PER_CLASS[i]})
     update_rho()
 #________________________________________________________________________________
 
@@ -436,7 +441,8 @@ def main():
     jobs_added = 0
     total_time = 0 # captures sum of response time of all jobs
     rho = [0]
-    proportion_idle_servers = [0] * s
+    proportion_idle_servers = [pd.DataFrame(columns=['timestamp', 'idle_proportion'])] * s
+    data_lists = [[] * s]
     
     while jobs_added < TOTAL_JOBS:    
         clock = next_arrival_time # Jump ahead to adding our next job
@@ -444,7 +450,7 @@ def main():
         add_idle_servers_to_idle_lists(servers_PQ, dispatchers, clock) # Make sure idlelist is up to date, if any servers had became idle in between job arrivals
         
         if jobs_added >= EQUILIBRIUM_AMOUNT:
-            pasta_measurements(rho, proportion_idle_servers, dispatchers)
+            pasta_measurements(rho, jobs_added - EQUILIBRIUM_AMOUNT, dispatchers, data_lists)
         
         chosen_dispatcher = dispatchers[random.randint(0,NUM_DISPATCHER - 1)] # select a random dispatcher
         fastest_existing_idle_speed = None # Could be None (i-queue has 0 idle servers), or 0 through s-1
@@ -472,11 +478,42 @@ def main():
     clock = sys.maxsize - 100 # Flashforward time
     total_time += finish_jobs_in_servers(servers_as_list, clock)
     
+    # Add all PASTA data points to pandas dataframe
+    for i in range(len(proportion_idle_servers)):
+        proportion_idle_servers[i] = pd.DataFrame(data_lists[i])
+    
+    # Print metrics
     print(f'E[T]: {total_time/TOTAL_JOBS}')
     print(f'rho: {rho[0]/(TOTAL_JOBS - EQUILIBRIUM_AMOUNT)}')
-    print(f'proportion of idle servers: {[proportion / (TOTAL_JOBS - EQUILIBRIUM_AMOUNT) for proportion in proportion_idle_servers]}')
+    print(f"proportion of idle servers: {[data['idle_proportion'].mean() for data in proportion_idle_servers]}")
+    print(f"variance of proportion: {[data['idle_proportion'].var() for data in proportion_idle_servers]}")
     print(f'arrival rate: {ARRIVAL_RATE / NUM_SERVERS}')
     
+    # Data visualization
+    for data in proportion_idle_servers:
+        # Histogram
+        plt.figure(figsize=(10, 6))
+        sns.histplot(data['idle_proportion'], kde=True)
+        plt.title('Distribution of Idle Proportion')
+        plt.xlabel('Idle Proportion')
+        plt.ylabel('Frequency')
+        plt.show()
+        
+        # # Lineplot
+        # plt.figure(figsize=(10, 6))
+        # sns.lineplot(x='timestamp', y='idle_proportion', data=data)
+        # plt.title('Proportion of Idle Servers Over Time')
+        # plt.xlabel('Timestamp')
+        # plt.ylabel('Idle Proportion')
+        # plt.show()
+        
+        # # Boxplot
+        # plt.figure(figsize=(10, 6))
+        # sns.boxplot(x=data['idle_proportion'])
+        # plt.title('Box Plot of Idle Proportion')
+        # plt.xlabel('Idle Proportion')
+        # plt.show()
+
 if __name__ == '__main__':
     main()
     
