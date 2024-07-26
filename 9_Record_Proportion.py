@@ -43,6 +43,15 @@ INFORM_DISPATCHER_POLICY = INFORM_DISPATCHER_POLICY
 SELECT_SERVER_POLICY = SELECT_SERVER_POLICY
 
 
+class MetricTracker:
+    def __init__(self):
+        self.total_time: float = 0
+        self.rho: float = 0
+        self.proportion_idle_servers = [pd.DataFrame(columns=['timestamp', 'idle_proportion'])] * s
+        self.proportion_idle_servers_data = [[] * s]
+
+metrics = MetricTracker()
+
 class Dispatcher:
     def __init__(self, index):
         self.index = index
@@ -274,12 +283,11 @@ def finish_jobs_in_servers(servers: List[Server], clock):
     '''Finish up all the jobs that ought to have been finished according to the current time in clock
     Return the time it took, which will be added to totalTime'''
     
-    total_time_addition = 0
     for server in servers: 
         while True:
             if server.next_departure_time <= clock: # We need to first finish all the jobs that should have been completed by now in this server
                 job_to_finish = server.queued_jobs.pop(0)
-                total_time_addition += (server.next_departure_time - job_to_finish.arrival_time)
+                metrics.total_time += (server.next_departure_time - job_to_finish.arrival_time)
                 
                 if len(server.queued_jobs) != 0: # We process the next job
                     server.next_departure_time += server.queued_jobs[0].time_for_completion
@@ -288,7 +296,6 @@ def finish_jobs_in_servers(servers: List[Server], clock):
                     break
             else:
                 break
-    return total_time_addition
 
 def choose_dispatchers_to_inform(dispatchers) -> List[Dispatcher]:
     '''Return list of dispatchers to inform of the idle server based on policy'''
@@ -355,7 +362,6 @@ def pick_server(chosen_dispatcher, fastest_existing_idle_speed, clock, two_D_Arr
         return random.choices(population = sum(list(servers.values()),[]), weights = weights, k = 1)[0]
         
     picked_server = None
-    total_time_addition = 0
     
     if SELECT_SERVER_POLICY == "Fastest idle server":
         if fastest_existing_idle_speed is not None:
@@ -363,14 +369,14 @@ def pick_server(chosen_dispatcher, fastest_existing_idle_speed, clock, two_D_Arr
         else:
             picked_server = pick_random_proportional_capacity()
         
-        total_time_addition += finish_jobs_in_servers([picked_server], clock)
+        finish_jobs_in_servers([picked_server], clock)
             
-        return picked_server, total_time_addition
+        return picked_server
         
     if SELECT_SERVER_POLICY == "Query faster servers":
         if fastest_existing_idle_speed == 0: # don't even query
             picked_server = chosen_dispatcher.big_idle_list[0][0]
-            total_time_addition += finish_jobs_in_servers([picked_server], clock)
+            finish_jobs_in_servers([picked_server], clock)
         else:    
             selectedQueryMix = pick_query_mix(two_D_Array, fastest_existing_idle_speed) # Numpy array of numbers, each index corresponding to number of servers per that class
             
@@ -379,23 +385,23 @@ def pick_server(chosen_dispatcher, fastest_existing_idle_speed, clock, two_D_Arr
                 numThisClass = selectedQueryMix[i]
                 queriedServers.extend(random.sample(servers[i], int(numThisClass)))
             
-            total_time_addition += finish_jobs_in_servers(queriedServers, clock) # Finish up whatever jobs that should have been finished so the length of each queried server is accurate
+            finish_jobs_in_servers(queriedServers, clock) # Finish up whatever jobs that should have been finished so the length of each queried server is accurate
             
             assignmentKey = create_assignment_key(selectedQueryMix,queriedServers) # a list
             if 0 not in assignmentKey and fastest_existing_idle_speed != None: # This would mean all queried servers has length > 0, so automatically pick the fastest existing idle server
                 picked_server = chosen_dispatcher.big_idle_list[fastest_existing_idle_speed][0]
-                total_time_addition += finish_jobs_in_servers([chosen_dispatcher.big_idle_list[fastest_existing_idle_speed][0]], clock) 
+                finish_jobs_in_servers([chosen_dispatcher.big_idle_list[fastest_existing_idle_speed][0]], clock) 
             else:
                 picked_server = pick_server_from_query_mix(assignment_hashmap[tuple(assignmentKey)],selectedQueryMix, queriedServers) # pick the fastest server class which must be idle
-        return picked_server, total_time_addition
+        return picked_server
 
     if SELECT_SERVER_POLICY == "M/M/N":
         picked_server = pick_random_proportional_capacity()
-        total_time_addition += finish_jobs_in_servers([picked_server], clock)
-        return picked_server, total_time_addition
+        finish_jobs_in_servers([picked_server], clock)
+        return picked_server
         
 
-def pasta_measurements(rho, timestamp, dispatchers: List[Dispatcher], data_lists: List[List]):
+def pasta_measurements(timestamp, dispatchers: List[Dispatcher]):
     ''' Once a job arrives, record proportion of occupied dispatchers (to update rho), and record proportion
     of idle servers per speed class'''
     def update_rho():
@@ -405,14 +411,14 @@ def pasta_measurements(rho, timestamp, dispatchers: List[Dispatcher], data_lists
                 if idle_list:
                     occupied_i_queues += 1
                     break
-        rho[0] += occupied_i_queues / NUM_DISPATCHER
+        metrics.rho += occupied_i_queues / NUM_DISPATCHER
         
     total_idle_per_class = [0] * s
     for dispatcher in dispatchers:
         for i in range(s):
             total_idle_per_class[i] += len(dispatcher.big_idle_list[i])         #ASSUMED THAT each idle server belonged in only one dispatcher
     for i in range(s):
-        data_lists[i].append({'timestamp': timestamp, 'idle_proportion': total_idle_per_class[i] / NUM_SERVERS_PER_CLASS[i]})
+        metrics.proportion_idle_servers_data[i].append({'timestamp': timestamp, 'idle_proportion': total_idle_per_class[i] / NUM_SERVERS_PER_CLASS[i]})
     update_rho()
 #________________________________________________________________________________
 
@@ -435,14 +441,7 @@ def main():
     # Set up system details
     clock = 0
     next_arrival_time = generate_new_interarrival(ARRIVAL_RATE)
-    
-    
-    # Set up metric measurements:
     jobs_added = 0
-    total_time = 0 # captures sum of response time of all jobs
-    rho = [0]
-    proportion_idle_servers = [pd.DataFrame(columns=['timestamp', 'idle_proportion'])] * s
-    data_lists = [[] * s]
     
     while jobs_added < TOTAL_JOBS:    
         clock = next_arrival_time # Jump ahead to adding our next job
@@ -450,7 +449,7 @@ def main():
         add_idle_servers_to_idle_lists(servers_PQ, dispatchers, clock) # Make sure idlelist is up to date, if any servers had became idle in between job arrivals
         
         if jobs_added >= EQUILIBRIUM_AMOUNT:
-            pasta_measurements(rho, jobs_added - EQUILIBRIUM_AMOUNT, dispatchers, data_lists)
+            pasta_measurements(jobs_added - EQUILIBRIUM_AMOUNT, dispatchers)
         
         chosen_dispatcher = dispatchers[random.randint(0,NUM_DISPATCHER - 1)] # select a random dispatcher
         fastest_existing_idle_speed = None # Could be None (i-queue has 0 idle servers), or 0 through s-1
@@ -459,9 +458,8 @@ def main():
                 fastest_existing_idle_speed = i
                 break    
         
-        assigned_server, total_time_addition = pick_server(chosen_dispatcher, fastest_existing_idle_speed, 
-                                                       clock, two_D_Array, servers, assignment_hashmap) # Pick server to give job to
-        total_time += total_time_addition
+        assigned_server = pick_server(chosen_dispatcher, fastest_existing_idle_speed, 
+                                        clock, two_D_Array, servers, assignment_hashmap) # Pick server to give job to
         
         
         new_job = Job(clock, assigned_server.speed)
@@ -476,21 +474,21 @@ def main():
     
     # We need to finish up any remaining jobs in the servers
     clock = sys.maxsize - 100 # Flashforward time
-    total_time += finish_jobs_in_servers(servers_as_list, clock)
+    finish_jobs_in_servers(servers_as_list, clock)
     
     # Add all PASTA data points to pandas dataframe
-    for i in range(len(proportion_idle_servers)):
-        proportion_idle_servers[i] = pd.DataFrame(data_lists[i])
+    for i in range(s):
+        metrics.proportion_idle_servers[i] = pd.DataFrame(metrics.proportion_idle_servers_data[i])
     
     # Print metrics
-    print(f'E[T]: {total_time/TOTAL_JOBS}')
-    print(f'rho: {rho[0]/(TOTAL_JOBS - EQUILIBRIUM_AMOUNT)}')
-    print(f"proportion of idle servers: {[data['idle_proportion'].mean() for data in proportion_idle_servers]}")
-    print(f"variance of proportion: {[data['idle_proportion'].var() for data in proportion_idle_servers]}")
+    print(f'E[T]: {metrics.total_time/TOTAL_JOBS}')
+    print(f'rho: {metrics.rho/(TOTAL_JOBS - EQUILIBRIUM_AMOUNT)}')
+    print(f"proportion of idle servers: {[data['idle_proportion'].mean() for data in metrics.proportion_idle_servers]}")
+    print(f"variance of proportion: {[data['idle_proportion'].var() for data in metrics.proportion_idle_servers]}")
     print(f'arrival rate: {ARRIVAL_RATE / NUM_SERVERS}')
     
     # Data visualization
-    for data in proportion_idle_servers:
+    for data in metrics.proportion_idle_servers:
         # Histogram
         plt.figure(figsize=(10, 6))
         sns.histplot(data['idle_proportion'], kde=True)
