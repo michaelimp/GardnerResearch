@@ -1,0 +1,322 @@
+Fixed Parameter - NUM_DISPATCHER: 5 # DEFAULT
+
+Results for ARRIVAL_RATE = 0.2, TOTAL_FAST_CAPACITY = 100, NUM_FAST = 100 
+E[T]: 0.9984590269441777
+rho: 0.9957511111111299
+proportion of idle servers: [0.04482733333335741, 0.8829065679012149]
+Predicted P1: 0   Predicted P2: 0.8888888888888888
+proportion of jobs processed per speed class: [0.47734, 0.52266]
+
+
+Results for ARRIVAL_RATE = 0.2, TOTAL_FAST_CAPACITY = 100, NUM_FAST = 400 
+E[T]: 2.3243067146789502
+rho: 0.9962622222222669
+proportion of idle servers: [0.011964805555561986, 0.8850852037036956]
+Predicted P1: 0   Predicted P2: 0.8888888888888888
+proportion of jobs processed per speed class: [0.49357, 0.50643]
+
+
+Results for ARRIVAL_RATE = 0.2, TOTAL_FAST_CAPACITY = 300, NUM_FAST = 100 
+E[T]: 0.4251119609450314
+rho: 0.9977044444444778
+proportion of idle servers: [0.3940459999999945, 0.9726558518518652]
+Predicted P1: 0.33333333333333337      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.90468, 0.09532]
+
+
+Results for ARRIVAL_RATE = 0.2, TOTAL_FAST_CAPACITY = 300, NUM_FAST = 400 
+E[T]: 1.3204883893588726
+rho: 0.9987800000000082
+proportion of idle servers: [0.34846427777778083, 0.9930916111114941]
+Predicted P1: 0.33333333333333337      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.97511, 0.02489]
+
+
+Results for ARRIVAL_RATE = 0.2, TOTAL_FAST_CAPACITY = 600, NUM_FAST = 100 
+E[T]: 0.2877066872401433
+rho: 0.9995155555555626
+proportion of idle servers: [0.6861807777778195, 0.9702885802469837]
+Predicted P1: 0.6666666666666667      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.94153, 0.05847]
+
+
+Results for ARRIVAL_RATE = 0.2, TOTAL_FAST_CAPACITY = 600, NUM_FAST = 400 
+E[T]: 0.6758090868623553
+rho: 0.9977066666666984
+proportion of idle servers: [0.6742162777777607, 0.9921558888891471]
+Predicted P1: 0.6666666666666667      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.98519, 0.01481]
+
+
+Results for ARRIVAL_RATE = 0.2, TOTAL_FAST_CAPACITY = 900, NUM_FAST = 100 
+E[T]: 0.5067978080782904
+rho: 0.9972311111111285
+proportion of idle servers: [0.7890359999999621, 0.91155756790121]
+Predicted P1: 0.7777777777777778      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.95555, 0.04445]
+
+
+Results for ARRIVAL_RATE = 0.2, TOTAL_FAST_CAPACITY = 900, NUM_FAST = 400 
+E[T]: 0.4980354211585784
+rho: 0.9977955555555539
+proportion of idle servers: [0.7796182499999854, 0.979618870370615]
+Predicted P1: 0.7777777777777778      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.99033, 0.00967]
+
+
+Results for ARRIVAL_RATE = 0.4, TOTAL_FAST_CAPACITY = 100, NUM_FAST = 100 
+E[T]: 0.995232569774866
+rho: 0.9992288888888999
+proportion of idle servers: [0.016468777777766612, 0.6678119999999866]
+Predicted P1: 0   Predicted P2: 0.6666666666666667
+proportion of jobs processed per speed class: [0.24847, 0.75153]
+
+
+Results for ARRIVAL_RATE = 0.4, TOTAL_FAST_CAPACITY = 100, NUM_FAST = 400 
+E[T]: 1.5116545431467734
+rho: 0.993782222222265
+proportion of idle servers: [0.004156972222219408, 0.6663447037037481]
+Predicted P1: 0   Predicted P2: 0.6666666666666667
+proportion of jobs processed per speed class: [0.25352, 0.74648]
+
+
+Results for ARRIVAL_RATE = 0.4, TOTAL_FAST_CAPACITY = 300, NUM_FAST = 100 
+E[T]: 0.6452415053580964
+rho: 0.9957755555555663
+proportion of idle servers: [0.10026688888890235, 0.813484975308608]
+Predicted P1: 0   Predicted P2: 0.8571428571428572
+proportion of jobs processed per speed class: [0.67554, 0.32446]
+
+
+Results for ARRIVAL_RATE = 0.4, TOTAL_FAST_CAPACITY = 300, NUM_FAST = 400 
+E[T]: 1.2104948659976078
+rho: 0.9967311111111441
+proportion of idle servers: [0.03212102777777818, 0.8406770925925567]
+Predicted P1: 0   Predicted P2: 0.8571428571428572
+proportion of jobs processed per speed class: [0.72902, 0.27098]
+
+
+Results for ARRIVAL_RATE = 0.4, TOTAL_FAST_CAPACITY = 600, NUM_FAST = 100 
+E[T]: 0.3567036072877793
+rho: 0.9959933333333808
+proportion of idle servers: [0.39187288888888266, 0.9079340123456651]
+Predicted P1: 0.33333333333333337      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.90984, 0.09016]
+
+
+Results for ARRIVAL_RATE = 0.4, TOTAL_FAST_CAPACITY = 600, NUM_FAST = 400 
+E[T]: 0.6862595604278459
+rho: 0.9988177777777809
+proportion of idle servers: [0.3515904999999992, 0.977911259259106]
+Predicted P1: 0.33333333333333337      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.97759, 0.02241]
+
+
+Results for ARRIVAL_RATE = 0.4, TOTAL_FAST_CAPACITY = 900, NUM_FAST = 100 
+E[T]: 0.6081191403954556
+rho: 0.9989911111111149
+proportion of idle servers: [0.5838184444444291, 0.7773722469135718]
+Predicted P1: 0.5555555555555556      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.94356, 0.05644]
+
+
+Results for ARRIVAL_RATE = 0.4, TOTAL_FAST_CAPACITY = 900, NUM_FAST = 400 
+E[T]: 0.5167507963233773
+rho: 0.9975244444444757
+proportion of idle servers: [0.5620268611111059, 0.9460797222221908]
+Predicted P1: 0.5555555555555556      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.98617, 0.01383]
+
+
+Results for ARRIVAL_RATE = 0.6, TOTAL_FAST_CAPACITY = 100, NUM_FAST = 100 
+E[T]: 1.0032829071797504
+rho: 0.9951177777778039
+proportion of idle servers: [0.009800333333327351, 0.4409983333333317]
+Predicted P1: 0   Predicted P2: 0.4444444444444444
+proportion of jobs processed per speed class: [0.16612, 0.83388]
+
+
+Results for ARRIVAL_RATE = 0.6, TOTAL_FAST_CAPACITY = 100, NUM_FAST = 400 
+E[T]: 1.2406743604747166
+rho: 0.9912488888889561
+proportion of idle servers: [0.0024941666666651475, 0.4433807407407412]
+Predicted P1: 0   Predicted P2: 0.4444444444444444
+proportion of jobs processed per speed class: [0.16919, 0.83081]
+
+
+Results for ARRIVAL_RATE = 0.6, TOTAL_FAST_CAPACITY = 300, NUM_FAST = 100 
+E[T]: 0.8348076594368626
+rho: 0.9929911111111687
+proportion of idle servers: [0.044324444444466454, 0.5532602839506329]
+Predicted P1: 0   Predicted P2: 0.5714285714285714
+proportion of jobs processed per speed class: [0.47953, 0.52047]
+
+
+Results for ARRIVAL_RATE = 0.6, TOTAL_FAST_CAPACITY = 300, NUM_FAST = 400 
+E[T]: 1.0977367005117138
+rho: 0.990517777777849
+proportion of idle servers: [0.012053527777784068, 0.5679160740740479]
+Predicted P1: 0   Predicted P2: 0.5714285714285714
+proportion of jobs processed per speed class: [0.49817, 0.50183]
+
+
+Results for ARRIVAL_RATE = 0.6, TOTAL_FAST_CAPACITY = 600, NUM_FAST = 100 
+E[T]: 0.5675921062974472
+rho: 0.9956800000000161
+proportion of idle servers: [0.18826999999998054, 0.7100329876543078]
+Predicted P1: 0.0      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.80664, 0.19336]
+
+
+Results for ARRIVAL_RATE = 0.6, TOTAL_FAST_CAPACITY = 600, NUM_FAST = 400 
+E[T]: 0.7454739418598851
+rho: 0.9916266666667469
+proportion of idle servers: [0.09993683333333478, 0.8596468703703702]
+Predicted P1: 0.0      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.90512, 0.09488]
+
+
+Results for ARRIVAL_RATE = 0.6, TOTAL_FAST_CAPACITY = 900, NUM_FAST = 100 
+E[T]: 0.9116513476421202
+rho: 0.9952533333333932
+proportion of idle servers: [0.3951052222222153, 0.4646158024691193]
+Predicted P1: 0.33333333333333337      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.91088, 0.08912]
+
+
+Results for ARRIVAL_RATE = 0.6, TOTAL_FAST_CAPACITY = 900, NUM_FAST = 400 
+E[T]: 0.5898407343937703
+rho: 0.9958755555556039
+proportion of idle servers: [0.3501830277777738, 0.8441490555555301]
+Predicted P1: 0.33333333333333337      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.9743, 0.0257]
+
+
+Results for ARRIVAL_RATE = 0.8, TOTAL_FAST_CAPACITY = 100, NUM_FAST = 100 
+E[T]: 1.013845326579111
+rho: 0.9801933333334873
+proportion of idle servers: [0.00710922222221836, 0.2239781604938245]
+Predicted P1: 0   Predicted P2: 0.2222222222222222
+proportion of jobs processed per speed class: [0.1249, 0.8751]
+
+
+Results for ARRIVAL_RATE = 0.8, TOTAL_FAST_CAPACITY = 100, NUM_FAST = 400 
+E[T]: 1.114606042284702
+rho: 0.971471111111344
+proportion of idle servers: [0.0017457777777768384, 0.22689074074072552]
+Predicted P1: 0   Predicted P2: 0.2222222222222222
+proportion of jobs processed per speed class: [0.12972, 0.87028]
+
+
+Results for ARRIVAL_RATE = 0.8, TOTAL_FAST_CAPACITY = 300, NUM_FAST = 100 
+E[T]: 0.9449396562623876
+rho: 0.9867911111112021
+proportion of idle servers: [0.0278451111111127, 0.27884902469136275]
+Predicted P1: 0   Predicted P2: 0.2857142857142857
+proportion of jobs processed per speed class: [0.36685, 0.63315]
+
+
+Results for ARRIVAL_RATE = 0.8, TOTAL_FAST_CAPACITY = 300, NUM_FAST = 400 
+E[T]: 1.056051528580012
+rho: 0.9784933333334922
+proportion of idle servers: [0.006986055555556061, 0.2697404259259219]
+Predicted P1: 0   Predicted P2: 0.2857142857142857
+proportion of jobs processed per speed class: [0.37179, 0.62821]
+
+
+Results for ARRIVAL_RATE = 0.8, TOTAL_FAST_CAPACITY = 600, NUM_FAST = 100 
+E[T]: 0.8472257372226786
+rho: 0.9882200000000878
+proportion of idle servers: [0.09853933333334665, 0.35206856790122776]
+Predicted P1: 0   Predicted P2: 0.5
+proportion of jobs processed per speed class: [0.67589, 0.32411]
+
+
+Results for ARRIVAL_RATE = 0.8, TOTAL_FAST_CAPACITY = 600, NUM_FAST = 400 
+E[T]: 0.9021563892284388
+rho: 0.9793866666668816
+proportion of idle servers: [0.03202775000000108, 0.4611098148148207]
+Predicted P1: 0   Predicted P2: 0.5
+proportion of jobs processed per speed class: [0.73349, 0.26651]
+
+
+Results for ARRIVAL_RATE = 0.8, TOTAL_FAST_CAPACITY = 900, NUM_FAST = 100 
+E[T]: 1.245783941243327
+rho: 0.9456288888892408
+proportion of idle servers: [0.2132756666666567, 0.05552929629629757]
+Predicted P1: 0.11111111111111116      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.87923, 0.12077]
+
+
+Results for ARRIVAL_RATE = 0.8, TOTAL_FAST_CAPACITY = 900, NUM_FAST = 400 
+E[T]: 0.7528982808950606
+rho: 0.9923111111111764
+proportion of idle servers: [0.16133616666666778, 0.5605401851851632]
+Predicted P1: 0.11111111111111116      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.94497, 0.05503]
+
+
+Results for ARRIVAL_RATE = 0.9, TOTAL_FAST_CAPACITY = 100, NUM_FAST = 100 
+E[T]: 1.0445236809307137
+rho: 0.957471111111408
+proportion of idle servers: [0.005831555555552722, 0.10479716049382919]
+Predicted P1: 0   Predicted P2: 0.11111111111111116
+proportion of jobs processed per speed class: [0.11066, 0.88934]
+
+
+Results for ARRIVAL_RATE = 0.9, TOTAL_FAST_CAPACITY = 100, NUM_FAST = 400 
+E[T]: 1.1028156473461048
+rho: 0.9418355555559353
+proportion of idle servers: [0.0014840555555548252, 0.10898918518518091]
+Predicted P1: 0   Predicted P2: 0.11111111111111116
+proportion of jobs processed per speed class: [0.11718, 0.88282]
+
+
+Results for ARRIVAL_RATE = 0.9, TOTAL_FAST_CAPACITY = 300, NUM_FAST = 100 
+E[T]: 0.999275473616399
+rho: 0.9683511111113322
+proportion of idle servers: [0.023163999999986033, 0.1412756790123449]
+Predicted P1: 0   Predicted P2: 0.1428571428571429
+proportion of jobs processed per speed class: [0.32817, 0.67183]
+
+
+Results for ARRIVAL_RATE = 0.9, TOTAL_FAST_CAPACITY = 300, NUM_FAST = 400 
+E[T]: 1.0633819931433703
+rho: 0.9540022222225478
+proportion of idle servers: [0.005659083333329415, 0.13698372222222502]
+Predicted P1: 0   Predicted P2: 0.1428571428571429
+proportion of jobs processed per speed class: [0.33521, 0.66479]
+
+
+Results for ARRIVAL_RATE = 0.9, TOTAL_FAST_CAPACITY = 600, NUM_FAST = 100 
+E[T]: 0.9899089346451829
+rho: 0.9692866666669029
+proportion of idle servers: [0.07042922222225048, 0.1346449259259283]
+Predicted P1: 0   Predicted P2: 0.25
+proportion of jobs processed per speed class: [0.61728, 0.38272]
+
+
+Results for ARRIVAL_RATE = 0.9, TOTAL_FAST_CAPACITY = 600, NUM_FAST = 400 
+E[T]: 0.9799870905157458
+rho: 0.9724533333335854
+proportion of idle servers: [0.02128219444444998, 0.2168617037036973]
+Predicted P1: 0   Predicted P2: 0.25
+proportion of jobs processed per speed class: [0.65322, 0.34678]
+
+
+Results for ARRIVAL_RATE = 0.9, TOTAL_FAST_CAPACITY = 900, NUM_FAST = 100 
+E[T]: 1.3833905927306798
+rho: 0.7889577777782043
+proportion of idle servers: [0.10948311111112224, 0.007846716049380045]
+Predicted P1: 0.0      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.88301, 0.11699]
+
+
+Results for ARRIVAL_RATE = 0.9, TOTAL_FAST_CAPACITY = 900, NUM_FAST = 400 
+E[T]: 0.9514806540729159
+rho: 0.971844444444705
+proportion of idle servers: [0.09250444444444401, 0.22563555555554823]
+Predicted P1: 0.0      Predicted P2: unknown
+proportion of jobs processed per speed class: [0.91308, 0.08692]
+
+

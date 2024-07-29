@@ -37,6 +37,8 @@ NUM_OBSERVATIONS = NUM_OBSERVATIONS
 NUM_SERVERS_PER_CLASS = NUM_SERVERS_PER_CLASS
 SERVICE_RATE_PER_CLASS = SERVICE_RATE_PER_CLASS
 
+# Error check in parameters
+error_checks()
 
 #File names
 QUERYING_CSV = "queryingRuleProbabilities.csv"
@@ -47,11 +49,12 @@ SELECT_SERVER_POLICY = SELECT_SERVER_POLICY
 class Metrics:
     def __init__(self):
         self.total_time: float = 0
-        self.rho: float = 0
-        self.proportion_idle_servers = [pd.DataFrame(columns=['timestamp', 'idle_proportion'])] * s
-        self.proportion_idle_servers_data = [[] for _ in range(s)]
+        self.rho: float = 0     # proportion of occupied i-queue
+        self.proportion_idle_servers = [pd.DataFrame(columns=['timestamp', 'idle_proportion'])] * s # panda df for analysis
+        self.proportion_idle_servers_data = [[] for _ in range(s)]  # to record actual data
         self.tagged_servers: List[Server] = [None] * s
-        self.tagged_servers_idle_freq = [0] * s
+        self.tagged_servers_idle_freq = [0] * s     # number of times the tagged server was idle
+        self.num_jobs_processed_by_speed_class = [0] * s
 
 metrics = Metrics()
 
@@ -352,7 +355,7 @@ def update_idleness_according_to_new_job(server: Server, dispatchers: List[Dispa
             servers_PQ.sort(key= lambda x: x[0])
             break
         
-def pick_server(chosen_dispatcher, fastest_existing_idle_speed, clock, two_D_Array, servers, assignment_hashmap):
+def pick_server(chosen_dispatcher, fastest_existing_idle_speed, clock, two_D_Array, servers, assignment_hashmap) -> Server:
     ''' We will pick the server given what we know as the fastest existing idle server.
     Return the picked server and the update to how much time it took to finish the jobs in the server(s)'''
     weights = None
@@ -473,7 +476,7 @@ def main():
         
         assigned_server = pick_server(chosen_dispatcher, fastest_existing_idle_speed, 
                                         clock, two_D_Array, servers, assignment_hashmap) # Pick server to give job to
-        
+        metrics.num_jobs_processed_by_speed_class[assigned_server.speed_class] += 1
         
         new_job = Job(clock, assigned_server.speed)
         assigned_server.queued_jobs.append(new_job)
@@ -497,19 +500,25 @@ def main():
     print(f'E[T]: {metrics.total_time/TOTAL_JOBS}')
     print(f'rho: {metrics.rho/ NUM_OBSERVATIONS}')
     print(f"proportion of idle servers: {[data['idle_proportion'].mean() for data in metrics.proportion_idle_servers]}")
-    print(f'proportion of idle for tagged servers: {[freq / NUM_OBSERVATIONS for freq in metrics.tagged_servers_idle_freq]}')
-    print(f"variance of proportion: {[data['idle_proportion'].var() for data in metrics.proportion_idle_servers]}")
-    print(f'arrival rate: {ARRIVAL_RATE / NUM_SERVERS}')
+    if TOTAL_FAST_CAPACITY < ARRIVAL_RATE:
+        print(f'Predicted P1: {0}   Predicted P2: {1 - (ARRIVAL_RATE - TOTAL_FAST_CAPACITY) / TOTAL_SLOW_CAPACITY}')
+    elif TOTAL_FAST_CAPACITY >= ARRIVAL_RATE:
+        print(f'Predicted P1: {1 - ARRIVAL_RATE / TOTAL_FAST_CAPACITY}      Predicted P2: unknown')
+    # print(f'proportion of idle for tagged servers: {[freq / NUM_OBSERVATIONS for freq in metrics.tagged_servers_idle_freq]}') # sanity check, should equal above
+    # print(f"variance of proportion of idle servers: {[data['idle_proportion'].var() for data in metrics.proportion_idle_servers]}")
+    print(f'proportion of jobs processed per speed class: {[num_jobs / TOTAL_JOBS for num_jobs in metrics.num_jobs_processed_by_speed_class]}')
+    # print(f'arrival rate: {ARRIVAL_RATE / NUM_SERVERS}')
+    # print(f'policy: {SELECT_SERVER_POLICY}')
     
     # Data visualization
-    for data in metrics.proportion_idle_servers:
-        # Histogram
-        plt.figure(figsize=(10, 6))
-        sns.histplot(data['idle_proportion'], kde=True)
-        plt.title('Distribution of Idle Proportion')
-        plt.xlabel('Idle Proportion')
-        plt.ylabel('Frequency')
-        plt.show()
+    # for data in metrics.proportion_idle_servers:
+    #     # Histogram
+    #     plt.figure(figsize=(10, 6))
+    #     sns.histplot(data['idle_proportion'], kde=True)
+    #     plt.title('Distribution of Idle Proportion')
+    #     plt.xlabel('Idle Proportion')
+    #     plt.ylabel('Frequency')
+    #     plt.show()
         
         # # Lineplot
         # plt.figure(figsize=(10, 6))
