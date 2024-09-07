@@ -500,25 +500,25 @@ def main():
     print(f'E[T]: {metrics.total_time/TOTAL_JOBS}')
     print(f'rho: {metrics.rho/ NUM_OBSERVATIONS}')
     print(f"proportion of idle servers: {[data['idle_proportion'].mean() for data in metrics.proportion_idle_servers]}")
-    if TOTAL_FAST_CAPACITY < ARRIVAL_RATE:
-        print(f'Predicted P1: {0}   Predicted P2: {1 - (ARRIVAL_RATE - TOTAL_FAST_CAPACITY) / TOTAL_SLOW_CAPACITY}')
-    elif TOTAL_FAST_CAPACITY >= ARRIVAL_RATE:
-        print(f'Predicted P1: {1 - ARRIVAL_RATE / TOTAL_FAST_CAPACITY}      Predicted P2: unknown')
+    # if TOTAL_FAST_CAPACITY < ARRIVAL_RATE:
+    #     print(f'Predicted P1: {0}   Predicted P2: {1 - (ARRIVAL_RATE - TOTAL_FAST_CAPACITY) / TOTAL_SLOW_CAPACITY}')
+    # elif TOTAL_FAST_CAPACITY >= ARRIVAL_RATE:
+    #     print(f'Predicted P1: {1 - ARRIVAL_RATE / TOTAL_FAST_CAPACITY}      Predicted P2: unknown')
     # print(f'proportion of idle for tagged servers: {[freq / NUM_OBSERVATIONS for freq in metrics.tagged_servers_idle_freq]}') # sanity check, should equal above
-    # print(f"variance of proportion of idle servers: {[data['idle_proportion'].var() for data in metrics.proportion_idle_servers]}")
+    print(f"variance of proportion of idle servers: {[data['idle_proportion'].var() for data in metrics.proportion_idle_servers]}")
     print(f'proportion of jobs processed per speed class: {[num_jobs / TOTAL_JOBS for num_jobs in metrics.num_jobs_processed_by_speed_class]}')
-    # print(f'arrival rate: {ARRIVAL_RATE / NUM_SERVERS}')
-    # print(f'policy: {SELECT_SERVER_POLICY}')
+    print(f'arrival rate: {ARRIVAL_RATE / NUM_SERVERS}')
+    print(f'policy: {SELECT_SERVER_POLICY}')
     
     # Data visualization
-    # for data in metrics.proportion_idle_servers:
-    #     # Histogram
-    #     plt.figure(figsize=(10, 6))
-    #     sns.histplot(data['idle_proportion'], kde=True)
-    #     plt.title('Distribution of Idle Proportion')
-    #     plt.xlabel('Idle Proportion')
-    #     plt.ylabel('Frequency')
-    #     plt.show()
+    for data in metrics.proportion_idle_servers:
+        # Histogram
+        plt.figure(figsize=(10, 6))
+        sns.histplot(data['idle_proportion'], kde=True)
+        plt.title('Distribution of Idle Proportion')
+        plt.xlabel('Idle Proportion')
+        plt.ylabel('Frequency')
+        plt.show()
         
         # # Lineplot
         # plt.figure(figsize=(10, 6))
